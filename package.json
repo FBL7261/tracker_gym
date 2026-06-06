@@ -1,0 +1,17 @@
+{
+  "name": "gym-tracker",
+  "version": "1.0.0",
+  "description": "Monorepo gym tracker app",
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prisma": "^6.19.3"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3"
+  }
+}

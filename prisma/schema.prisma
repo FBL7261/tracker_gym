@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model exercises {
+  exercises_id      Int                 @id @default(autoincrement())
+  name              String?             @db.VarChar(50)
+  muscle_group      String?             @db.VarChar(50)
+  created_at        DateTime?           @default(now()) @db.Timestamp(6)
+  workout_exercises workout_exercises[]
+}
+
+model users {
+  user_id    Int        @id @default(autoincrement())
+  username   String     @db.VarChar(50)
+  email      String     @db.VarChar(50)
+  password   String     @db.VarChar(255)
+  phone      String     @db.VarChar(10)
+  created_at DateTime?  @default(now()) @db.Timestamp(6)
+  workouts   workouts[]
+}
+
+model workout_exercises {
+  workout_exercises_id Int            @id @default(autoincrement())
+  workout_id           Int
+  exercise_id          Int
+  orden_index          Int
+  created_at           DateTime?      @default(now()) @db.Timestamp(6)
+  workouts             workouts       @relation(fields: [workout_id], references: [workout_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workout")
+  exercises            exercises      @relation(fields: [exercise_id], references: [exercises_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workout_exercises")
+  workout_sets         workout_sets[]
+}
+
+model workout_sets {
+  workout_sets_id      Int               @id @default(autoincrement())
+  workout_exercises_id Int
+  reps                 Int
+  weight               Int
+  set_number           Int
+  created_at           DateTime?         @default(now()) @db.Timestamp(6)
+  workout_exercises    workout_exercises @relation(fields: [workout_exercises_id], references: [workout_exercises_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_workout_exercises")
+}
+
+model workouts {
+  workout_id        Int                 @id @default(autoincrement())
+  user_id           Int
+  date              DateTime            @db.Date
+  notes             String?
+  created_at        DateTime?           @default(now()) @db.Timestamp(6)
+  workout_exercises workout_exercises[]
+  users             users               @relation(fields: [user_id], references: [user_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user")
+}
